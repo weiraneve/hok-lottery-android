@@ -18,7 +18,7 @@ class LotteryServiceImpl(private val lotteryApi: RetrofitApi) : LotteryService {
         emit(Result.Loading)
         emit(
             try {
-                val response = lotteryApi.getLottery("demo")
+                val response = lotteryApi.getLottery()
                 if (response.isSuccessful) {
                     Result.Success(response.body())
                 } else {
