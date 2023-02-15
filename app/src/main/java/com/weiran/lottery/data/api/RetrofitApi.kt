@@ -14,8 +14,8 @@ interface RetrofitApi {
     suspend fun getLottery(@Body postParam: PostParam = PostParam(encryptCode = "asd")): Response<LotteryEntity>
 
     companion object {
-        const val BASE_URL = "http://192.168.31.236:8034"
-//        const val BASE_URL = "http://steveay.com:8034"
+//        const val BASE_URL = "http://192.168.31.236:8034"
+        const val BASE_URL = "http://steveay.com:8034"
     }
 
 }

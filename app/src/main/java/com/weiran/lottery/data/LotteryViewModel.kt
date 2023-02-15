@@ -31,7 +31,6 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
                     }
                     it.copy(data = result)
                 }
-
             }
         }
     }

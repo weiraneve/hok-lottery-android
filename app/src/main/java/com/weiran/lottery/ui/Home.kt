@@ -1,10 +1,12 @@
 package com.weiran.lottery.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,6 +16,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +26,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.weiran.lottery.R
 import com.weiran.lottery.data.LotteryAction
@@ -32,9 +37,17 @@ import org.koin.androidx.compose.getViewModel
 @Composable
 fun Home(viewModel: LotteryViewModel = getViewModel()) {
     val action = viewModel::dispatchAction
+    val data = viewModel.lotteryState.collectAsState().value.data ?: ""
     Box {
-        InputLottery(action)
         BackGround()
+        InputLottery(action)
+        Text(
+            text = data,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .width(150.dp)
+                .background(color = Color.White)
+        )
     }
 }
 
