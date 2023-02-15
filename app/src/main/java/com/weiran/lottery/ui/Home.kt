@@ -25,11 +25,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.zIndex
 import com.weiran.lottery.R
+import com.weiran.lottery.data.LotteryAction
+import com.weiran.lottery.data.LotteryViewModel
+import org.koin.androidx.compose.getViewModel
 
 @Composable
-fun Home() {
+fun Home(viewModel: LotteryViewModel = getViewModel()) {
+    val action = viewModel::dispatchAction
     Box {
-        InputLottery()
+        InputLottery(action)
         BackGround()
     }
 }
@@ -48,7 +52,7 @@ private fun BackGround() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun InputLottery() {
+private fun InputLottery(lotteryAction: (action: LotteryAction) -> Unit) {
     var text by remember { mutableStateOf("") }
     Row(
         modifier = Modifier.fillMaxSize(),
@@ -61,7 +65,9 @@ private fun InputLottery() {
             onValueChange = { text = it },
             colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
             trailingIcon = {
-                IconButton(onClick = {}) { Icon(Icons.Filled.Search, null) }
+                IconButton(onClick = { lotteryAction.invoke(LotteryAction.FetchLottery) }) {
+                    Icon(Icons.Filled.Search, null)
+                }
             }
         )
     }
