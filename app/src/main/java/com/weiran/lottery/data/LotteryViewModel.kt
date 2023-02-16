@@ -16,9 +16,9 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
     private val _lotteryState = MutableStateFlow(LotteryState())
     val lotteryState = _lotteryState.asStateFlow()
 
-    private fun fetchLottery() {
+    private fun fetchLottery(encryptCode: String) {
         viewModelScope.launch {
-            lotteryService.getLottery().collect { res ->
+            lotteryService.getLottery(encryptCode).collect { res ->
                 _lotteryState.update {
                     val data: String
                     var logs = ""
@@ -52,7 +52,7 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
 
     fun dispatchAction(action: LotteryAction) {
         when (action) {
-            LotteryAction.FetchLottery -> fetchLottery()
+            is LotteryAction.FetchLottery -> fetchLottery(action.encryptCode)
         }
     }
 
@@ -69,5 +69,5 @@ data class LotteryState(
 )
 
 sealed class LotteryAction {
-    object FetchLottery : LotteryAction()
+    data class FetchLottery(val encryptCode: String) : LotteryAction()
 }

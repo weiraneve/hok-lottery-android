@@ -11,7 +11,7 @@ interface RetrofitApi {
 
     @POST("/")
     @Headers("Content-Type: application/json;charset=utf-8")
-    suspend fun getLottery(@Body postParam: PostParam = PostParam(encryptCode = "asd")): Response<LotteryEntity>
+    suspend fun getLottery(@Body postParam: PostParam): Response<LotteryEntity>
 
     companion object {
 //        const val BASE_URL = "http://192.168.31.236:8034"

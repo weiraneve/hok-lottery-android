@@ -75,7 +75,7 @@ private fun InputLottery(
             onValueChange = { text = it },
             colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
             trailingIcon = {
-                IconButton(onClick = { lotteryAction.invoke(LotteryAction.FetchLottery) }) {
+                IconButton(onClick = { lotteryAction.invoke(LotteryAction.FetchLottery(text)) }) {
                     Icon(Icons.Filled.Search, null)
                 }
             }
