@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weiran.lottery.common.exception.NetworkReachableException
 import com.weiran.lottery.common.obj.Result
+import com.weiran.lottery.data.model.LogResponse
 import com.weiran.lottery.data.service.LotteryService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,20 +20,34 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
         viewModelScope.launch {
             lotteryService.getLottery().collect { res ->
                 _lotteryState.update {
-                    val result = when (res) {
-                        is Result.Loading -> LOADING
-                        is Result.Success -> res.data?.toString()
+                    val data: String
+                    var logs = ""
+                    when (res) {
+                        is Result.Loading -> data = LOADING
+                        is Result.Success -> {
+                            data = res.data?.data.toString()
+                            logs = getLogs(res.data?.logs)
+                        }
+
                         is Result.Error -> {
-                            when (res.exception) {
-                                is NetworkReachableException -> res.exception.message
+                            data = when (res.exception) {
+                                is NetworkReachableException -> res.exception.message.toString()
                                 else -> ERROR
                             }
                         }
                     }
-                    it.copy(data = result)
+                    it.copy(data = data, logsResult = logs, isRequest = true)
                 }
             }
         }
+    }
+
+    private fun getLogs(logs: List<LogResponse>?): String {
+        var logsResult = ""
+        logs?.forEach {
+            logsResult += "队伍: " + it.teamId.toString() + " " + it.pickGroup + " 时间: " + it.time.toLocaleString() + "\n\n"
+        }
+        return logsResult
     }
 
     fun dispatchAction(action: LotteryAction) {
@@ -48,7 +63,9 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
 }
 
 data class LotteryState(
-    val data: String? = ""
+    val data: String = "",
+    val logsResult: String = "",
+    val isRequest: Boolean = false
 )
 
 sealed class LotteryAction {

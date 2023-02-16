@@ -2,11 +2,11 @@ package com.weiran.lottery.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,23 +31,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.weiran.lottery.R
 import com.weiran.lottery.data.LotteryAction
+import com.weiran.lottery.data.LotteryState
 import com.weiran.lottery.data.LotteryViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun Home(viewModel: LotteryViewModel = getViewModel()) {
     val action = viewModel::dispatchAction
-    val data = viewModel.lotteryState.collectAsState().value.data ?: ""
+    val lotteryState = viewModel.lotteryState.collectAsState().value
     Box {
         BackGround()
-        InputLottery(action)
-        Text(
-            text = data,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .width(150.dp)
-                .background(color = Color.White)
-        )
+        InputLottery(action, lotteryState)
     }
 }
 
@@ -65,13 +59,16 @@ private fun BackGround() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun InputLottery(lotteryAction: (action: LotteryAction) -> Unit) {
+private fun InputLottery(
+    lotteryAction: (action: LotteryAction) -> Unit,
+    lotteryState: LotteryState
+) {
     var text by remember { mutableStateOf("") }
-    Row(
+    Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(100.dp))
         OutlinedTextField(
             value = text,
             label = { Text(text = PLEASE_INPUT_KEY) },
@@ -83,6 +80,14 @@ private fun InputLottery(lotteryAction: (action: LotteryAction) -> Unit) {
                 }
             }
         )
+        Spacer(modifier = Modifier.height(200.dp))
+        if (lotteryState.isRequest) {
+            Text(
+                text = lotteryState.data + "\n\n" + lotteryState.logsResult,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.background(color = Color.White)
+            )
+        }
     }
 }
 
