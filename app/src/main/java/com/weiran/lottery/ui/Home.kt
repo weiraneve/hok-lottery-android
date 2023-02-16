@@ -22,9 +22,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,30 +59,32 @@ private fun BackGround() {
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 private fun InputLottery(
     lotteryAction: (action: LotteryAction) -> Unit,
     lotteryState: LotteryState
 ) {
     var text by remember { mutableStateOf("") }
+    val keyboard = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(100.dp))
+        Spacer(modifier = Modifier.height(SPACER_HEIGHT))
         OutlinedTextField(
             value = text,
             label = { Text(text = PLEASE_INPUT_KEY) },
             onValueChange = { text = it },
             colors = TextFieldDefaults.textFieldColors(containerColor = Color.White),
             trailingIcon = {
-                IconButton(onClick = { lotteryAction.invoke(LotteryAction.FetchLottery(text)) }) {
-                    Icon(Icons.Filled.Search, null)
-                }
+                IconButton(onClick = {
+                    lotteryAction.invoke(LotteryAction.FetchLottery(text))
+                    keyboard!!.hide()
+                }) { Icon(Icons.Filled.Search, null) }
             }
         )
-        Spacer(modifier = Modifier.height(200.dp))
+        Spacer(modifier = Modifier.height(SPACER_HEIGHT))
         if (lotteryState.isRequest) {
             Text(
                 text = lotteryState.data + "\n\n" + lotteryState.logsResult,
@@ -92,3 +96,4 @@ private fun InputLottery(
 }
 
 private const val PLEASE_INPUT_KEY = "输入队伍密钥"
+private val SPACER_HEIGHT = 100.dp
