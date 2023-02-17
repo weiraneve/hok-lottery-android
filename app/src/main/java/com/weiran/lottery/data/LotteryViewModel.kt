@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel() {
 
@@ -52,7 +53,7 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
 
     fun dispatchAction(action: LotteryAction) {
         when (action) {
-            is LotteryAction.FetchLottery -> fetchLottery(action.encryptCode)
+            is LotteryAction.FetchLottery -> fetchLottery(action.encryptCode.lowercase(Locale.getDefault()))
         }
     }
 
