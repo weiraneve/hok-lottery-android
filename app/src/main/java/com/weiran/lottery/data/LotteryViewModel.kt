@@ -19,7 +19,7 @@ class LotteryViewModel(private val lotteryService: LotteryService) : ViewModel()
 
     private fun fetchLottery(encryptCode: String) {
         viewModelScope.launch {
-            lotteryService.getLottery(encryptCode).collect { res ->
+            lotteryService.fetchData(encryptCode).collect { res ->
                 _lotteryState.update {
                     val data: String
                     var logs = ""
