@@ -70,5 +70,5 @@ data class LotteryState(
 )
 
 sealed class LotteryAction {
-    data class FetchLottery(val encryptCode: String) : LotteryAction()
+    class FetchLottery(val encryptCode: String) : LotteryAction()
 }
